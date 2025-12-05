@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=eduquest-super-secret-key-2025
+      - JWT_SECRET_KEY=eduquest-jwt-secret-2025
+      - DATABASE_URL=sqlite:///eduquest.db
+      - OPENROUTER_API_KEY=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
+    volumes:
+      - ./backend:/app
+      - backend_data:/app/instance
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend_data:
